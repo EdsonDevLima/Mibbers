@@ -10,23 +10,34 @@ git clone https://github.com/EdsonDevLima/Mibbers
 cd backend
 ```
 Instalar dependencias:
-```npm i```
+```bash
+npm i
+```
 
 Criar as cupons no banco de dados:
-```npm run seed```
+```bash
+npm run seed
+```
 
 Executar projeto:
-```npm run dev```
+```bash
+npm run dev
+```
 
 # No Frontend:
 ```bash
 cd frontend/my-app
 ```
 Instalar dependencias:
-```npm i```
+
+```bash
+npm i
+```
 
 Executar projeto:
-```npm run dev```
+```bash
+npm run dev
+```
 
 
 
