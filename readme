@@ -1,0 +1,42 @@
+
+# edge cases
+
+-Cupom não existe.
+-Cupom está inativo.
+-Cupom expirou.
+-Cupom atingiu o limite de uso.
+-Valor da compra é menor que o mínimo exigido para o cupom.
+
+# Cupons de Teste no frontend
+
+## `DESCONTO10`
+Desconto de 10% sobre o total do pedido, sem valor mínimo.
+
+## `FIXO50`
+Desconto fixo de R$ 50,00. Exige valor mínimo de R$ 100,00 no pedido.
+
+# Cobertura de Testes
+
+## `cupom inexistente`
+Cupom não encontrado no banco de dados.
+
+## `cupom inativo`
+Cupom com status inativo.
+
+## `cupom expirado`
+Cupom com data de validade no passado, testado com desconto percentual e fixo.
+
+## `cupom esgotado`
+Cupom com limite de uso igual a zero, testado com desconto percentual e fixo.
+
+## `valor mínimo não atingido`
+Subtotal do pedido abaixo do mínimo exigido pelo cupom, testado com desconto percentual e fixo.
+
+## `aplicação com sucesso com limite de uso`
+Cupom aplicado com sucesso com limite de uso definido, testado com desconto percentual e fixo.
+
+## `aplicação com sucesso sem limite de uso`
+Cupom aplicado com sucesso com limite de uso alto, testado com desconto percentual e fixo.
+
+
+

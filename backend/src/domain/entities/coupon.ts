@@ -42,6 +42,7 @@ export class Coupon {
 
   calcCounpon(productsList: TProduct[]) {
     //soma todos os produtos do pedido
+  
     const total = productsList.reduce((acc, product) => acc + product.price, 0);
 
     if (this.discountType == 'percentage') {

@@ -33,13 +33,11 @@ async function applyCoupon() {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/coupons/apply", {
+    const response = await fetch("http://localhost:3001/coupons/apply", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        counponCode: code,
+        couponCode: code,
         productsList: products.map((p) => ({
           tittle: p.title,
           description: "",
@@ -49,14 +47,14 @@ async function applyCoupon() {
       }),
     });
 
-    if (!response.ok) {
+    const data: ApplyCouponResponse = await response.json();
+
+    if (response.status >= 500) {
       setDiscountPct(0);
       setCouponStatus("error");
       setCouponMsg("Erro ao aplicar cupom. Tente novamente mais tarde.");
       return;
     }
-
-    const data: ApplyCouponResponse = await response.json();
 
     if (!data.success) {
       setDiscountPct(0);
@@ -65,10 +63,7 @@ async function applyCoupon() {
       return;
     }
 
-    const discountValue = data.discount;
-
-    const percent = Math.round((discountValue / data.originalValue) * 100);
-
+    const percent = Math.round((data.discount / data.originalValue) * 100);
     setDiscountPct(percent);
     setCouponStatus("success");
     setCouponMsg(data.message || "Cupom aplicado com sucesso!");
@@ -78,7 +73,6 @@ async function applyCoupon() {
     setCouponMsg("Erro inesperado. Verifique sua conexão.");
   }
 }
-
   return (
     <>
       <button
