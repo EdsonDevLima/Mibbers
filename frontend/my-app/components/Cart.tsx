@@ -10,69 +10,75 @@ export function Cart() {
   const { products, removeProduct } = useCart();
   const [showCart, setShowCart] = useState(false);
   const [couponInput, setCouponInput] = useState("");
-  const [discountPct, setDiscountPct] = useState(0);
+  const [discountAmt, setDiscountAmt] = useState(0);
   const [couponStatus, setCouponStatus] = useState<"idle" | "success" | "error">("idle");
   const [couponMsg, setCouponMsg] = useState("");
 
   const totalQty = products.reduce((sum, p) => sum + p.amount, 0);
   const subtotal = products.reduce((sum, p) => sum + p.price * p.amount, 0);
-  const discountAmt = subtotal * (discountPct / 100);
+  const discountPct = subtotal > 0 ? Math.round((discountAmt / subtotal) * 100) : 0;
   const total = subtotal - discountAmt;
 
   function fmt(val: number) {
     return val.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
-async function applyCoupon() {
-  const code = couponInput.trim().toUpperCase();
+  async function applyCoupon() {
+    const code = couponInput.trim().toUpperCase();
 
-  if (!code) {
-    setCouponStatus("error");
-    setCouponMsg("Digite um cupom antes de aplicar.");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:3001/coupons/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        couponCode: code,
-        productsList: products.map((p) => ({
-          tittle: p.title,
-          description: "",
-          price: p.price,
-          amount: p.amount,
-        })),
-      }),
-    });
-
-    const data: ApplyCouponResponse = await response.json();
-
-    if (response.status >= 500) {
-      setDiscountPct(0);
+    if (products.length === 0) {
       setCouponStatus("error");
-      setCouponMsg("Erro ao aplicar cupom. Tente novamente mais tarde.");
+      setCouponMsg("O carrinho está vazio.");
       return;
     }
 
-    if (!data.success) {
-      setDiscountPct(0);
+    if (!code) {
       setCouponStatus("error");
-      setCouponMsg(data.message);
+      setCouponMsg("Digite um cupom antes de aplicar.");
       return;
     }
 
-    const percent = Math.round((data.discount / data.originalValue) * 100);
-    setDiscountPct(percent);
-    setCouponStatus("success");
-    setCouponMsg(data.message || "Cupom aplicado com sucesso!");
-  } catch (err) {
-    setDiscountPct(0);
-    setCouponStatus("error");
-    setCouponMsg("Erro inesperado. Verifique sua conexão.");
+    try {
+      const response = await fetch("http://localhost:3001/coupons/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          couponCode: code,
+          productsList: products.map((p) => ({
+            tittle: p.title,
+            description: "",
+            price: p.price,
+            amount: p.amount,
+          })),
+        }),
+      });
+
+      const data: ApplyCouponResponse = await response.json();
+
+      if (response.status >= 500) {
+        setDiscountAmt(0);
+        setCouponStatus("error");
+        setCouponMsg("Erro ao aplicar cupom. Tente novamente mais tarde.");
+        return;
+      }
+
+      if (!data.success) {
+        setDiscountAmt(0);
+        setCouponStatus("error");
+        setCouponMsg(data.message);
+        return;
+      }
+
+      setDiscountAmt(data.discount);
+      setCouponStatus("success");
+      setCouponMsg(data.message || "Cupom aplicado com sucesso!");
+    } catch (err) {
+      setDiscountAmt(0);
+      setCouponStatus("error");
+      setCouponMsg("Erro inesperado. Verifique sua conexão.");
+    }
   }
-}
+
   return (
     <>
       <button
@@ -81,6 +87,7 @@ async function applyCoupon() {
         aria-label="Abrir carrinho"
       >
         <Image src={iconCart} alt="Carrinho" width={50} height={50} />
+
         {totalQty > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
             {totalQty}
@@ -89,11 +96,12 @@ async function applyCoupon() {
       </button>
 
       {showCart && (
-        <div className="absolute top-[80px] right-0 w-full max-w-md bg-white shadow-lg border border-gray-200  p-4 z-50">
-
+        <div className="absolute top-[80px] right-0 w-full max-w-md bg-white shadow-lg border border-gray-200 p-4 z-50">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-medium text-gray-900">Carrinho</h2>
-            <span className="text-sm text-gray-400">{totalQty} {totalQty === 1 ? "item" : "itens"}</span>
+            <span className="text-sm text-gray-400">
+              {totalQty} {totalQty === 1 ? "item" : "itens"}
+            </span>
           </div>
 
           {products.length === 0 ? (
@@ -103,15 +111,19 @@ async function applyCoupon() {
               {products.map((product) => (
                 <div
                   key={product.title}
-                  className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 "
+                  className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{product.title}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {product.title}
+                    </p>
                     <p className="text-xs text-gray-400">Qtd: {product.amount}</p>
                   </div>
+
                   <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
                     {fmt(product.price * product.amount)}
                   </span>
+
                   <button
                     className="text-gray-300 hover:text-red-500 transition-colors p-1"
                     onClick={() => removeProduct(product.title)}
@@ -124,8 +136,11 @@ async function applyCoupon() {
             </div>
           )}
 
-          <div className="bg-gray-50 border border-gray-100  p-3 mb-4">
-            <p className="text-xs font-medium text-gray-500 mb-2">🏷 Cupom de desconto</p>
+          <div className="bg-gray-50 border border-gray-100 p-3 mb-4">
+            <p className="text-xs font-medium text-gray-500 mb-2">
+              Cupom de desconto
+            </p>
+
             <div className="flex gap-2">
               <input
                 type="text"
@@ -135,6 +150,7 @@ async function applyCoupon() {
                 onChange={(e) => setCouponInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && applyCoupon()}
               />
+
               <button
                 className="h-9 px-4 text-sm border border-gray-200 rounded-lg bg-white hover:bg-gray-100 transition-colors"
                 onClick={applyCoupon}
@@ -142,10 +158,13 @@ async function applyCoupon() {
                 Aplicar
               </button>
             </div>
+
             {couponStatus !== "idle" && (
               <p
                 className={`mt-2 text-xs ${
-                  couponStatus === "success" ? "text-green-600" : "text-red-500"
+                  couponStatus === "success"
+                    ? "text-green-600"
+                    : "text-red-500"
                 }`}
               >
                 {couponMsg}
@@ -153,13 +172,15 @@ async function applyCoupon() {
             )}
           </div>
 
-          <div className="bg-white border border-gray-100  p-4">
+          <div className="bg-white border border-gray-100 p-4">
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-500">Subtotal ({totalQty} {totalQty === 1 ? "item" : "itens"})</span>
+              <span className="text-gray-500">
+                Subtotal ({totalQty} {totalQty === 1 ? "item" : "itens"})
+              </span>
               <span className="font-medium text-gray-900">{fmt(subtotal)}</span>
             </div>
 
-            {discountPct > 0 && (
+            {discountAmt > 0 && (
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-gray-500">
                   Desconto{" "}
@@ -167,7 +188,9 @@ async function applyCoupon() {
                     -{discountPct}%
                   </span>
                 </span>
-                <span className="font-medium text-green-600">- {fmt(discountAmt)}</span>
+                <span className="font-medium text-green-600">
+                  - {fmt(discountAmt)}
+                </span>
               </div>
             )}
 
@@ -175,7 +198,9 @@ async function applyCoupon() {
 
             <div className="flex justify-between items-center">
               <span className="font-medium text-gray-900">Total</span>
-              <span className="text-xl font-medium text-gray-900">{fmt(total)}</span>
+              <span className="text-xl font-medium text-gray-900">
+                {fmt(total)}
+              </span>
             </div>
 
             <button className="w-full mt-4 h-11 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
