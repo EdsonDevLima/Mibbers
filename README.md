@@ -1,4 +1,4 @@
-Este projeto foi desenvolvido com foco em organização de domínio, escalabilidade e familiaridade com as ferramentas utilizadas.
+Este projeto foi desenvolvido com foco em organização de domínio e  escalabilidade.
 
 Backend
 
@@ -22,46 +22,11 @@ No frontend, o carrinho de compras foi implementado utilizando:
 -gerenciamento de estado local para controle do carrinho
 -usei apenas Next js com o Tailwind.
 
+A estrutura do projeto segue princípios inspirados em separação de responsabilidades, isolando regras de negócio da camada mais técnica, o que facilita:
 
-Copiar o projeto:
-
-```bash
-git clone https://github.com/EdsonDevLima/Mibbers
-```
-
-# No Backend:
-```bash
-cd backend
-```
-Instalar dependencias:
-```bash
-npm i
-```
-
-Criar as cupons no banco de dados:
-```bash
-npm run seed
-```
-
-Executar projeto:
-```bash
-npm run dev
-```
-
-# No Frontend:
-```bash
-cd frontend/my-app
-```
-Instalar dependencias:
-
-```bash
-npm i
-```
-
-Executar projeto:
-```bash
-npm run dev
-```
+testabilidade
+manutenção
+escalabilidade futura
 
 
 # Perguntas do desafio
@@ -120,6 +85,47 @@ Cupom aplicado com sucesso com limite de uso definido, testado com desconto perc
 
 ## `aplicação com sucesso sem limite de uso`
 Cupom aplicado com sucesso com limite de uso alto, testado com desconto percentual e fixo.
+
+
+Utilizar o projeto em ambiente de desenvolvimento:
+
+```bash
+git clone https://github.com/EdsonDevLima/Mibbers
+```
+
+# No Backend:
+```bash
+cd backend
+```
+Instalar dependencias:
+```bash
+npm i
+```
+
+Criar as cupons no banco de dados:
+```bash
+npm run seed
+```
+
+Executar projeto:
+```bash
+npm run dev
+```
+
+# No Frontend:
+```bash
+cd frontend/my-app
+```
+Instalar dependencias:
+
+```bash
+npm i
+```
+
+Executar projeto:
+```bash
+npm run dev
+```
 
 
 
