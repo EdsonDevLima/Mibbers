@@ -137,7 +137,7 @@ git clone https://github.com/EdsonDevLima/Mibbers
 ```bash
 cd backend
 npm i
-npm run seed
+npm run seed ##esse comando é importante para criar os cupons automaticamente no banco de dados
 npm run dev
 ```
 
@@ -146,7 +146,7 @@ npm run dev
 ## Frontend
 
 ```bash
-cd frontend/my-app
+cd frontend/my-app 
 npm i
 npm run dev
 ```
