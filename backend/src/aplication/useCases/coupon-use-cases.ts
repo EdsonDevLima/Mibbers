@@ -14,7 +14,7 @@ export class CounponUseCases {
   async ApplyCoupon(props: TApplyCouponProps): Promise<ApplyCouponResponse> {
     try {
       let responseCalc;
-      const counpon = await this.findCounpon(props.counponCode);
+      const counpon = await this.findCounpon(props.couponCode);
       if (!counpon) return { success: false, message: 'cupom inexistente.' };
       if (!counpon.isActive())
         return { success: false, message: 'cupom inativo.' };
@@ -48,11 +48,13 @@ export class CounponUseCases {
       throw Error(`${error}`);
     }
   }
-  async findCounpon(counponCode: string) {
+  async findCounpon(couponCode: string) {
     try {
       const data = await this.CounponRepository.findOne({
-        where: { couponCode: counponCode },
+        where: { couponCode: couponCode },
       });
+
+      if (!data) return null;
 
       return CouponMapper.toDomain(data);
     } catch (error) {

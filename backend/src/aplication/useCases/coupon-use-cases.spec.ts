@@ -1,11 +1,12 @@
 import { CounponUseCases } from './coupon-use-cases';
 import { ECouponStatus, Etype } from '../../domain/types/counpon-types';
 import { Coupon } from '../../domain/entities/coupon';
+import { Coupon as CouponEntity } from '../../infrastructure/database/orm-entities/coupon';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 jest.mock('../../infrastructure/database/connection', () => ({
   connectionDb: {
-    getRepository: () => ({
+    getRepository: jest.fn().mockReturnValue({
       findOne: jest.fn(),
       update: jest.fn(),
     }),
@@ -14,6 +15,9 @@ jest.mock('../../infrastructure/database/connection', () => ({
 
 jest.mock('../../domain/mappers/coupon.mapper');
 import { CouponMapper } from '../../domain/mappers/coupon.mapper';
+import { connectionDb } from '../../infrastructure/database/connection';
+
+const getRepository = () => connectionDb.getRepository(CouponEntity);
 
 const products = [
   { tittle: 'Produto A', description: 'desc', price: 200, amount: 1 },
@@ -37,14 +41,19 @@ describe('CounponUseCases - ApplyCoupon', () => {
 
   beforeEach(() => {
     useCase = new CounponUseCases();
-    jest.clearAllMocks();
+    jest
+      .mocked(getRepository().findOne)
+      .mockResolvedValue({ couponCode: 'MOCK' } as CouponEntity);
+    jest
+      .mocked(getRepository().update)
+      .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
   });
 
   it('retorna erro quando cupom não existe', async () => {
     jest.mocked(CouponMapper.toDomain).mockReturnValue(null);
 
     const result = await useCase.ApplyCoupon({
-      counponCode: 'INVALIDO',
+      couponCode: 'INVALIDO',
       productsList: products,
     });
 
@@ -57,7 +66,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       .mockReturnValue(makeCoupon({ status: ECouponStatus.INACTIVE }));
 
     const result = await useCase.ApplyCoupon({
-      counponCode: 'INATIVO',
+      couponCode: 'INATIVO',
       productsList: products,
     });
 
@@ -74,7 +83,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'EXPIRADO',
+        couponCode: 'EXPIRADO',
         productsList: products,
       });
 
@@ -91,7 +100,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'EXPIRADO_FIXO',
+        couponCode: 'EXPIRADO_FIXO',
         productsList: products,
       });
 
@@ -109,7 +118,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'ESGOTADO_PERCENT',
+        couponCode: 'ESGOTADO_PERCENT',
         productsList: products,
       });
 
@@ -126,7 +135,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'ESGOTADO_FIXO',
+        couponCode: 'ESGOTADO_FIXO',
         productsList: products,
       });
 
@@ -144,7 +153,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'DESCONTO10',
+        couponCode: 'DESCONTO10',
         productsList: products,
       });
 
@@ -164,7 +173,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'FIXO50',
+        couponCode: 'FIXO50',
         productsList: products,
       });
 
@@ -177,19 +186,16 @@ describe('CounponUseCases - ApplyCoupon', () => {
 
   describe('aplicação com sucesso - com limite de uso', () => {
     it('aplica cupom de porcentagem com limite e retorna valores corretos', async () => {
-      jest
-        .mocked(CouponMapper.toDomain)
-        .mockReturnValue(
-          makeCoupon({
-            discountType: Etype.PERCENTAGE,
-            discountValue: 10,
-            usageLimit: 5,
-          }),
-        );
+      jest.mocked(CouponMapper.toDomain).mockReturnValue(
+        makeCoupon({
+          discountType: Etype.PERCENTAGE,
+          discountValue: 10,
+          usageLimit: 5,
+        }),
+      );
 
-      // total = 300, 10% = 30, final = 270
       const result = await useCase.ApplyCoupon({
-        counponCode: 'DESCONTO10',
+        couponCode: 'DESCONTO10',
         productsList: products,
       });
 
@@ -203,19 +209,16 @@ describe('CounponUseCases - ApplyCoupon', () => {
     });
 
     it('aplica cupom fixo com limite e retorna valores corretos', async () => {
-      jest
-        .mocked(CouponMapper.toDomain)
-        .mockReturnValue(
-          makeCoupon({
-            discountType: Etype.FIXED,
-            discountValue: 50,
-            usageLimit: 5,
-          }),
-        );
+      jest.mocked(CouponMapper.toDomain).mockReturnValue(
+        makeCoupon({
+          discountType: Etype.FIXED,
+          discountValue: 50,
+          usageLimit: 5,
+        }),
+      );
 
-      // total = 300, fixo = 50, final = 250
       const result = await useCase.ApplyCoupon({
-        counponCode: 'FIXO50',
+        couponCode: 'FIXO50',
         productsList: products,
       });
 
@@ -231,18 +234,16 @@ describe('CounponUseCases - ApplyCoupon', () => {
 
   describe('aplicação com sucesso - sem limite de uso', () => {
     it('aplica cupom de porcentagem sem limite', async () => {
-      jest
-        .mocked(CouponMapper.toDomain)
-        .mockReturnValue(
-          makeCoupon({
-            discountType: Etype.PERCENTAGE,
-            discountValue: 20,
-            usageLimit: 999,
-          }),
-        );
+      jest.mocked(CouponMapper.toDomain).mockReturnValue(
+        makeCoupon({
+          discountType: Etype.PERCENTAGE,
+          discountValue: 20,
+          usageLimit: 999,
+        }),
+      );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'DESCONTO20',
+        couponCode: 'DESCONTO20',
         productsList: products,
       });
 
@@ -261,11 +262,11 @@ describe('CounponUseCases - ApplyCoupon', () => {
           discountType: Etype.FIXED,
           discountValue: 100,
           usageLimit: 999,
-        }), // ← era -1
+        }),
       );
 
       const result = await useCase.ApplyCoupon({
-        counponCode: 'FIXO100',
+        couponCode: 'FIXO100',
         productsList: products,
       });
 

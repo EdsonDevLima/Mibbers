@@ -26,7 +26,7 @@ export type TProduct = {
 };
 
 export type TApplyCouponProps = {
-  counponCode: string;
+  couponCode: string;
   productsList: TProduct[];
 };
 

@@ -10,15 +10,15 @@ export class CounponController {
 
   async ApplyCounpon(Req: FastifyRequest, Rep: FastifyReply) {
     try {
-      const { counponCode, productsList } = Req.body as TApplyCouponProps;
+      const { couponCode, productsList } = Req.body as TApplyCouponProps;
       const result = await this.counponUseCases.ApplyCoupon({
-        counponCode,
+        couponCode,
         productsList,
       });
       if (result.success == false) {
         return Rep.status(400).send(result);
       }
-      return result;
+      return Rep.status(200).send(result);
     } catch (error) {
       throw Error(`${error}`);
     }

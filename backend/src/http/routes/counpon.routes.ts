@@ -5,8 +5,8 @@ import { ApplyCouponSchema } from '../schemas/counpon.schema';
 export async function couponRoutes(app: FastifyInstance) {
   const controller = new CounponController();
   app.post(
-    '/coupons/apply',
+    '/apply',
     { schema: { body: ApplyCouponSchema } },
-    controller.ApplyCounpon,
+    controller.ApplyCounpon.bind(controller),
   );
 }
