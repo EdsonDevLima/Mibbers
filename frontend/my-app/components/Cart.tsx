@@ -75,7 +75,7 @@ export function Cart() {
     } catch (err) {
       setDiscountAmt(0);
       setCouponStatus("error");
-      setCouponMsg("Erro inesperado. Verifique sua conexão.");
+      setCouponMsg("Erro inesperado. Verifique sua conexão ou entre em contato com o suporte.");
     }
   }
 
@@ -86,7 +86,7 @@ export function Cart() {
         onClick={() => setShowCart(!showCart)}
         aria-label="Abrir carrinho"
       >
-        <Image src={iconCart} alt="Carrinho" width={50} height={50} />
+        <Image src={iconCart} alt="Carrinho" width={35} height={35} />
 
         {totalQty > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
