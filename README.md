@@ -47,7 +47,7 @@ npm run dev
 
 Como você modelou os tipos de cupom e as regras? - Comecei modelando o cupom como uma entidade de domínio, definindo todas as propriedades, depois abaixo fui criando as regras principais de negocio.
 
-O que mudaria em produção? - Trataria a concorrência utilizando um sistema de processamento de filas ou algo nesse sentido (falo isso porque já trabalhei com filas, mas para tarefas pesadas. Como a aplicação de um desconto exige uma resposta rápida, eu precisaria ver qual seria a melhor abordagem, mas seria algo voltado ao para enfileiramento de processo). Também adicionaria restrições para categorias ou produtos específicos e um limite de uso por usuário (ID, CPF ou e-mail) para evitar fraudes. Além disso, faria o cálculo do desconto com base nos produtos armazenados no banco de dados.
+O que mudaria em produção? - Trataria a concorrência utilizando um sistema de processamento de filas ou algo nesse sentido (falo isso porque já trabalhei com filas, mas para tarefas pesadas. Como a aplicação de um desconto exige uma resposta rápida, eu precisaria ver qual seria a melhor abordagem, mas seria algo voltado ao para enfileiramento de processo). Também adicionaria restrições para categorias ou produtos específicos e um limite de uso por usuário (ID, CPF ou e-mail) para evitar fraudes. Além disso, faria o cálculo do desconto com base nos produtos armazenados no banco de dados. E faria as requisições do lado do servidor pra desempenho e segurança.
 
 
 # edge cases
