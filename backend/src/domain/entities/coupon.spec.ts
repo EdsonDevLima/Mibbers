@@ -21,9 +21,11 @@ const products = [
 
 describe('Coupon - validações da entidade', () => {
   describe('isActive()', () => {
+
     it('retorna true quando cupom está ativo', () => {
       expect(makeCoupon().isActive()).toBe(true);
     });
+
     it('retorna false quando cupom está inativo', () => {
       expect(makeCoupon({ status: ECouponStatus.INACTIVE }).isActive()).toBe(
         false,
@@ -32,9 +34,11 @@ describe('Coupon - validações da entidade', () => {
   });
 
   describe('isExpired()', () => {
+
     it('retorna false quando cupom ainda não expirou', () => {
       expect(makeCoupon().isExpired()).toBe(false);
     });
+
     it('retorna true quando cupom já expirou', () => {
       expect(
         makeCoupon({ expiresAt: new Date('2000-01-01') }).isExpired(),
@@ -43,20 +47,24 @@ describe('Coupon - validações da entidade', () => {
   });
 
   describe('validateUsageLimit()', () => {
+
     it('retorna false quando cupom ainda possui usos disponíveis', () => {
       expect(makeCoupon({ usageLimit: 10 }).validateUsageLimit()).toBe(false);
     });
+
     it('retorna true quando cupom está esgotado', () => {
       expect(makeCoupon({ usageLimit: 0 }).validateUsageLimit()).toBe(true);
     });
   });
 
   describe('validateMinimumPurchase()', () => {
+
     it('retorna true quando valor da compra atinge o mínimo exigido', () => {
       expect(
         makeCoupon({ minimumPurchaseAmount: 100 }).validateMinimumPurchase(100),
       ).toBe(true);
     });
+
     it('retorna false quando valor da compra não atinge o mínimo exigido', () => {
       expect(
         makeCoupon({ minimumPurchaseAmount: 500 }).validateMinimumPurchase(300),
@@ -65,6 +73,7 @@ describe('Coupon - validações da entidade', () => {
   });
 
   describe('calcCounpon()', () => {
+
     it('calcula corretamente o desconto por porcentagem', () => {
       const result = makeCoupon({ discountValue: 10 }).calcCounpon(products);
       expect(result).toEqual({
@@ -73,11 +82,13 @@ describe('Coupon - validações da entidade', () => {
         finalValue: 270,
       });
     });
+
     it('calcula corretamente o desconto com valor fixo', () => {
       const result = makeCoupon({
         discountType: Etype.FIXED,
         discountValue: 50,
       }).calcCounpon(products);
+      
       expect(result).toEqual({
         originalValue: 300,
         discount: 50,

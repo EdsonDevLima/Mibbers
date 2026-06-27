@@ -3,6 +3,8 @@ import { ECouponStatus, Etype } from '../../domain/types/counpon.types';
 import { Coupon } from '../../domain/entities/coupon';
 import { Coupon as CouponEntity } from '../../infrastructure/database/orm-entities/coupon';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { CouponMapper } from '../../domain/mappers/coupon.mapper';
+import { connectionDb } from '../../infrastructure/database/connection';
 
 jest.mock('../../infrastructure/database/connection', () => ({
   connectionDb: {
@@ -14,8 +16,7 @@ jest.mock('../../infrastructure/database/connection', () => ({
 }));
 
 jest.mock('../../domain/mappers/coupon.mapper');
-import { CouponMapper } from '../../domain/mappers/coupon.mapper';
-import { connectionDb } from '../../infrastructure/database/connection';
+
 
 const getRepository = () => connectionDb.getRepository(CouponEntity);
 
@@ -41,9 +42,11 @@ describe('CounponUseCases - ApplyCoupon', () => {
 
   beforeEach(() => {
     useCase = new CounponUseCases();
+
     jest
       .mocked(getRepository().findOne)
       .mockResolvedValue({ couponCode: 'MOCK' } as CouponEntity);
+
     jest
       .mocked(getRepository().update)
       .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
@@ -60,6 +63,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
     expect(result).toEqual({ success: false, message: 'cupom inexistente.' });
   });
 
+
   it('retorna erro quando cupom está inativo', async () => {
     jest
       .mocked(CouponMapper.toDomain)
@@ -73,7 +77,9 @@ describe('CounponUseCases - ApplyCoupon', () => {
     expect(result).toEqual({ success: false, message: 'cupom inativo.' });
   });
 
+
   describe('cupom expirado', () => {
+
     it('retorna erro com cupom de porcentagem expirado', async () => {
       jest.mocked(CouponMapper.toDomain).mockReturnValue(
         makeCoupon({
@@ -110,6 +116,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
 
   describe('cupom esgotado (usageLimit <= 0)', () => {
     it('retorna erro com cupom de porcentagem esgotado', async () => {
+
       jest.mocked(CouponMapper.toDomain).mockReturnValue(
         makeCoupon({
           discountType: Etype.PERCENTAGE,
@@ -144,6 +151,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
   });
 
   describe('valor mínimo não atingido', () => {
+    
     it('retorna erro com cupom de porcentagem e valor abaixo do mínimo', async () => {
       jest.mocked(CouponMapper.toDomain).mockReturnValue(
         makeCoupon({
@@ -185,6 +193,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
   });
 
   describe('aplicação com sucesso - com limite de uso', () => {
+    
     it('aplica cupom de porcentagem com limite e retorna valores corretos', async () => {
       jest.mocked(CouponMapper.toDomain).mockReturnValue(
         makeCoupon({
@@ -233,6 +242,7 @@ describe('CounponUseCases - ApplyCoupon', () => {
   });
 
   describe('aplicação com sucesso - sem limite de uso', () => {
+    
     it('aplica cupom de porcentagem sem limite', async () => {
       jest.mocked(CouponMapper.toDomain).mockReturnValue(
         makeCoupon({
