@@ -14,7 +14,7 @@ export class CounponUseCases {
   async ApplyCoupon(props: TApplyCouponProps): Promise<ApplyCouponResponse> {
     try {
       let responseCalc;
-      const counpon = await this.findCounpon(props.couponCode);
+      const counpon = await this.findCounpon(props.couponCode.trim());
       if (!counpon) return { success: false, message: 'cupom inexistente.' };
       if (!counpon.isActive())
         return { success: false, message: 'cupom inativo.' };

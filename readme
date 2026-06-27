@@ -1,4 +1,44 @@
 
+Copiar o projeto:
+
+```bash
+git clone https://github.com/EdsonDevLima/Mibbers
+```
+
+# No Backend:
+```bash
+cd backend
+```
+Instalar dependencias:
+```npm i```
+
+Criar as cupons no banco de dados:
+```npm run seed```
+
+Executar projeto:
+```npm run dev```
+
+# No Frontend:
+```bash
+cd frontend/my-app
+```
+Instalar dependencias:
+```npm i```
+
+Executar projeto:
+```npm run dev```
+
+
+
+
+
+# Perguntas do desafio
+
+Como você modelou os tipos de cupom e as regras? - Comecei modelando o cupom como uma entidade de domínio, definindo todas as propriedades, depois abaixo fui criando as regras principais de negocio.
+
+O que mudaria em produção? - Trataria a concorrência utilizando um sistema de processamento de filas ou algo nesse sentido (falo isso porque já trabalhei com filas, mas para tarefas pesadas. Como a aplicação de um desconto exige uma resposta rápida, eu precisaria ver qual seria a melhor abordagem, mas seria algo voltado ao para enfileiramento de processo). Também adicionaria restrições para categorias ou produtos específicos e um limite de uso por usuário (ID, CPF ou e-mail) para evitar fraudes. Além disso, faria o cálculo do desconto com base nos produtos armazenados no banco de dados.
+
+
 # edge cases
 
 -Cupom não existe.
@@ -6,6 +46,16 @@
 -Cupom expirou.
 -Cupom atingiu o limite de uso.
 -Valor da compra é menor que o mínimo exigido para o cupom.
+-Código do cupom vazio ou contendo apenas espaços(No Backend e no Frontend).
+-Carrinho de compras vazio(No Backend e no Frontend).
+-O envio de propriedades a mais no Endpoint
+
+# edge cases deixados de lado
+
+-Desconto percentual maior que 100%.(poderia ser evitado ao cadastrar o cupom.)
+-Desconto negativo.(poderia ser evitado ao cadastrar o cupom.)
+-Desconto fixo maior que o valor da compra (evitar total negativo).(poderia ser evitado ao cadastrar o cupom.)
+
 
 # Cupons de Teste no frontend
 

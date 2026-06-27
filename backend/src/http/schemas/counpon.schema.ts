@@ -1,5 +1,6 @@
 export const ApplyCouponSchema = {
   type: 'object',
+  additionalProperties: false,
   required: ['couponCode', 'productsList'],
   properties: {
     couponCode: { type: 'string' },
