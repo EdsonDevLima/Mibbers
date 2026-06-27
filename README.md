@@ -1,3 +1,27 @@
+Este projeto foi desenvolvido com foco em organização de domínio, escalabilidade e familiaridade com as ferramentas utilizadas.
+
+Backend
+
+Optei por utilizar o TypeORM porque ele permite definir o modelo de domínio através de classes, facilitando a representação das entidades diretamente no código e sua persistência no banco de dados.
+
+A API foi construída com Fastify, escolhida por:
+
+-maior flexibilidade na organização de pastas e arquitetura.
+-melhor performance em comparação ao Express em cenários de alta carga.
+-familiaridade prévia com o framework
+-suporte a validações nativas de request, reduzindo dependência de bibliotecas externas.
+
+Qualidade de código:
+
+-ESLint foi utilizado para padronização e consistência do código.
+
+
+No frontend, o carrinho de compras foi implementado utilizando:
+
+-localStorage para persistência simples dos itens
+-gerenciamento de estado local para controle do carrinho
+-usei apenas Next js com o Tailwind.
+
 
 Copiar o projeto:
 
@@ -96,6 +120,8 @@ Cupom aplicado com sucesso com limite de uso definido, testado com desconto perc
 
 ## `aplicação com sucesso sem limite de uso`
 Cupom aplicado com sucesso com limite de uso alto, testado com desconto percentual e fixo.
+
+
 
 
 

@@ -1,23 +1,20 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { TProduct } from "@/data/data-types";
 import { CartContextType } from "@/types/context";
 
 const CartContext = createContext({} as CartContextType);
 
-function getInitialCart(): TProduct[] {
-  if (typeof window === "undefined") return []; 
-  try {
-    const data = localStorage.getItem("cart");
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [products, setProducts] = useState<TProduct[]>(getInitialCart);
+  const [products, setProducts] = useState<TProduct[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const data = localStorage.getItem("cart");
+    if (data) setProducts(JSON.parse(data));
+    setMounted(true);
+  }, []);
 
   function addProduct(product: TProduct) {
     setProducts((oldProducts) => {
@@ -47,7 +44,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <CartContext.Provider value={{ products, addProduct, removeProduct }}>
+    <CartContext.Provider
+      value={{
+        products: mounted ? products : [],
+        addProduct,
+        removeProduct,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
