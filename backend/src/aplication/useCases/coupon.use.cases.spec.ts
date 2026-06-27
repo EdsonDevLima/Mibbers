@@ -1,5 +1,5 @@
-import { CounponUseCases } from './coupon-use-cases';
-import { ECouponStatus, Etype } from '../../domain/types/counpon-types';
+import { CounponUseCases } from './coupon.use.cases';
+import { ECouponStatus, Etype } from '../../domain/types/counpon.types';
 import { Coupon } from '../../domain/entities/coupon';
 import { Coupon as CouponEntity } from '../../infrastructure/database/orm-entities/coupon';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';

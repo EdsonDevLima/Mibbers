@@ -3,7 +3,7 @@ import {
   Etype,
   TCouponProps,
   TProduct,
-} from '../types/counpon-types';
+} from '../types/counpon.types';
 
 export class Coupon {
   discountType: Etype;

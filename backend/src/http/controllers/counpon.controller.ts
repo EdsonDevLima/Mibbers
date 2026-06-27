@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { CounponUseCases } from '../../aplication/useCases/coupon-use-cases';
-import { TApplyCouponProps } from '../../domain/types/counpon-types';
+import { CounponUseCases } from '../../aplication/useCases/coupon.use.cases';
+import { TApplyCouponProps } from '../../domain/types/counpon.types';
 
 export class CounponController {
   private readonly counponUseCases: CounponUseCases;

@@ -1,5 +1,5 @@
 import { Coupon } from './coupon';
-import { ECouponStatus, Etype } from '../types/counpon-types';
+import { ECouponStatus, Etype } from '../types/counpon.types';
 import { describe, it, expect } from '@jest/globals';
 
 const makeCoupon = (overrides = {}) =>

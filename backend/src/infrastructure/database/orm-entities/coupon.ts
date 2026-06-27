@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ECouponStatus, Etype } from '../../../domain/types/counpon-types';
+import { ECouponStatus, Etype } from '../../../domain/types/counpon.types';
 
 @Entity()
 export class Coupon {

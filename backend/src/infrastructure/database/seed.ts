@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import { connectionDb } from "./connection"
 import { Coupon } from "./orm-entities/coupon"
-import { ECouponStatus, Etype } from "../../domain/types/counpon-types"
+import { ECouponStatus, Etype } from "../../domain/types/counpon.types"
 import env from "dotenv"
 
 env.config()

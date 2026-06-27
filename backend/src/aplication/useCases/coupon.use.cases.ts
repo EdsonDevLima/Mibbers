@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import {
   ApplyCouponResponse,
   TApplyCouponProps,
-} from '../../domain/types/counpon-types';
+} from '../../domain/types/counpon.types';
 import { Coupon } from '../../infrastructure/database/orm-entities/coupon';
 import { connectionDb } from '../../infrastructure/database/connection';
 import { CouponMapper } from '../../domain/mappers/coupon.mapper';
