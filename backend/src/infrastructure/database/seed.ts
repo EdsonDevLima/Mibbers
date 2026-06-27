@@ -2,6 +2,9 @@ import "reflect-metadata"
 import { connectionDb } from "./connection"
 import { Coupon } from "./orm-entities/coupon"
 import { ECouponStatus, Etype } from "../../domain/types/counpon-types"
+import env from "dotenv"
+
+env.config()
 
 const seeds: Partial<Coupon>[] = [
     {
@@ -25,6 +28,7 @@ const seeds: Partial<Coupon>[] = [
 ]
 
 async function runSeed() {
+    console.log('Conectando ao banco:', process.env.DATABASE_NAME)
     await connectionDb.initialize()
     const repo = connectionDb.getRepository(Coupon)
 
@@ -32,12 +36,14 @@ async function runSeed() {
         const exists = await repo.findOne({ where: { couponCode: seed.couponCode } })
         if (!exists) {
             await repo.save(repo.create(seed))
+            console.log(`Criado: ${seed.couponCode}`)
         } else {
             console.log(`Já existe: ${seed.couponCode}`)
         }
     }
 
     await connectionDb.destroy()
+    console.log('Seed finalizado.')
 }
 
 runSeed().catch(console.error)
