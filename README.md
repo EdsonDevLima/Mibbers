@@ -1,152 +1,92 @@
 # Projeto Mibbers
 
-Este projeto foi desenvolvido com foco em organização de domínio e escalabilidade.
+Projeto desenvolvido com foco em organização de domínio, separação de responsabilidades e escalabilidade.
+
+## Arquitetura e Tecnologias
+
+### Backend
+
+* **Fastify** pela performance, flexibilidade na arquitetura e suporte nativo à validação de requisições.
+* **TypeORM** para modelar o domínio através de classes e facilitar a persistência no banco.
+* **ESLint** para padronização do código.
+
+### Frontend
+
+* **Next.js** + **Tailwind CSS**.
+* Carrinho persistido em **localStorage** com gerenciamento de estado local.
 
 ---
 
-# Arquitetura e Tecnologias
+## Modelagem
 
-## Backend
-
-Optei por utilizar o **TypeORM** porque ele permite definir o modelo de domínio através de classes, facilitando a representação das entidades diretamente no código e sua persistência no banco de dados.
-
-A API foi construída com **Fastify**, escolhida por:
-
-- Maior flexibilidade na organização de pastas e arquitetura.
-- Melhor performance em comparação ao Express em cenários de alta carga.
-- Familiaridade prévia com o framework.
-- Suporte a validações nativas de request, reduzindo dependência de bibliotecas externas.
-
-### Qualidade de código
-
-- ESLint foi utilizado para padronização e consistência do código.
+O cupom foi modelado como uma entidade de domínio, definindo primeiro as regras de negócio e deixando a integração com bibliotecas e infraestrutura para as camadas externas.
 
 ---
 
-## Frontend
+## Melhorias para produção
 
-No frontend, o carrinho de compras foi implementado utilizando:
-
-- localStorage para persistência simples dos itens.
-- Gerenciamento de estado local para controle do carrinho.
-- Next.js com Tailwind CSS.
-
----
-
-## Estrutura geral
-
-A estrutura do projeto segue princípios inspirados em separação de responsabilidades, isolando regras de negócio da camada mais técnica, o que facilita:
-
-- Testabilidade
-- Manutenção
-- Escalabilidade futura
+* Controle de concorrência (filas ou estratégia equivalente).
+* Restrições por categoria ou produto.
+* Limite de uso por usuário (ID, CPF ou e-mail).
+* Cálculo dos descontos com base nos dados do banco.
+* Processamento das regras no servidor.
 
 ---
 
-# Perguntas do desafio
+## Edge Cases
 
-## Como você modelou os tipos de cupom e as regras?
-
-Comecei modelando o cupom como uma entidade de domínio, definindo todas as propriedades. Depois fui criando as regras principais de negócio, e só então parti para a parte que envolve bibliotecas externas.
-
----
-
-## O que mudaria em produção?
-
-Trataria a concorrência utilizando um sistema de processamento de filas ou algo nesse sentido (já trabalhei com filas para tarefas pesadas, mas como a aplicação de um desconto exige uma resposta rápida, eu precisaria estudar melhor a abordagem mais adequada).
-
-Também adicionaria:
-
-- Restrições para categorias ou produtos específicos.
-- Limite de uso por usuário (ID, CPF ou e-mail) para evitar fraudes.
-- Cálculo do desconto baseado nos produtos armazenados no banco de dados.
-- Requisições feitas do lado do servidor, para melhorar desempenho e segurança.
+* Cupom inexistente, inativo ou expirado.
+* Limite de uso atingido.
+* Valor mínimo não alcançado.
+* Código do cupom vazio.
+* Carrinho vazio.
+* Envio de propriedades extras na requisição.
 
 ---
 
-# Edge cases
+## Cupons de teste
 
-- Cupom não existe.
-- Cupom está inativo.
-- Cupom expirado.
-- Cupom atingiu o limite de uso.
-- Valor da compra menor que o mínimo exigido.
-- Código do cupom vazio ou contendo apenas espaços (Backend e Frontend).
-- Carrinho de compras vazio (Backend e Frontend).
-- Envio de propriedades a mais no endpoint.
+| Cupom          | Regra                                           |
+| -------------- | ----------------------------------------------- |
+| **DESCONTO10** | 10% de desconto, sem valor mínimo.              |
+| **FIXO50**     | R$ 50 de desconto para compras acima de R$ 100. |
 
 ---
 
-# Edge cases deixados de lado
+## Testes
 
-- Desconto percentual maior que 100% (pode ser evitado no cadastro do cupom).
-- Desconto negativo (pode ser evitado no cadastro do cupom).
-- Desconto fixo maior que o valor da compra (evita total negativo no cadastro).
+Cobertura para:
 
----
-
-# Cupons de teste (Frontend)
-
-## DESCONTO10
-- 10% de desconto no total do pedido.
-- Sem valor mínimo.
-
-## FIXO50
-- R$ 50,00 de desconto.
-- Valor mínimo: R$ 100,00.
+* Cupom inexistente.
+* Cupom inativo.
+* Cupom expirado.
+* Limite de uso atingido.
+* Valor mínimo não atingido.
+* Aplicação de cupom com sucesso.
 
 ---
 
-# Cobertura de testes
+## Como executar
 
-## Cupom inexistente
-Cupom não encontrado no banco de dados.
-
-## Cupom inativo
-Cupom com status inativo.
-
-## Cupom expirado
-Cupom com data de validade no passado (percentual e fixo).
-
-## Cupom esgotado
-Cupom com limite de uso igual a zero (percentual e fixo).
-
-## Valor mínimo não atingido
-Subtotal abaixo do mínimo exigido (percentual e fixo).
-
-## Aplicação com sucesso (com limite de uso)
-Cupom aplicado corretamente com limite definido.
-
-## Aplicação com sucesso (sem limite de uso)
-Cupom aplicado corretamente com limite alto.
-
----
-
-# Como rodar o projeto
-
-## Clonar o repositório
+### Clonar o projeto
 
 ```bash
 git clone https://github.com/EdsonDevLima/Mibbers
 ```
 
----
-
-## Backend
+### Backend
 
 ```bash
 cd backend
-npm i
-npm run seed ##esse comando é importante para criar os cupons automaticamente no banco de dados
+npm install
+npm run seed # cria os cupons de teste
 npm run dev
 ```
 
----
-
-## Frontend
+### Frontend
 
 ```bash
-cd frontend/my-app 
-npm i
+cd frontend/my-app
+npm install
 npm run dev
 ```
